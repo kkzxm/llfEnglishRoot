@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lingDream.llfEnglish.mapper.WordAndTagRelationMapper">
+    <!--region 结果集映射-->
+    <resultMap id="wordAndTagRelation" type="com.lingDream.llfEnglish.entity.WordAndTagRelation">
+        <result property="word.wordId" column="word_id"/>
+        <result property="word.wordSelf" column="word_self"/>
+        <result property="word.wordComment" column="word_comment"/>
+
+        <result property="wordTag.wordTagId" column="word_tag_id"/>
+        <result property="wordTag.wordTagName" column="word_tag_name"/>
+        <result property="wordTag.tagComment" column="tag_comment"/>
+    </resultMap>
+    <!--endregion-->
+    <select id="selectById" resultMap="wordAndTagRelation">
+        select *
+        from word_and_tag_relation_info
+        where word_id = #{word.wordId}
+          and word_tag_id = #{wordTag.wordTagId}
+    </select>
+    <select id="selectByOnly" resultMap="wordAndTagRelation">
+        select *
+        from word_and_tag_relation_info
+        where word_tag_name = #{wordTag.wordTagName}
+          and word_self = #{word.wordSelf}
+    </select>
+
+    <insert id="insert">
+        insert into word_and_tag_relation(word_id, word_tag_id, word_and_tag_comment)
+            value (#{word.wordId}, #{wordTag.wordTagId}, #{wordAndTagComment})
+    </insert>
+
+    <insert id="insertList">
+        insert into word_and_tag_relation(word_id, word_tag_id,word_and_tag_comment)
+        values
+        <foreach collection="list" separator="," item="item">
+            (#{item.word.wordId},#{item.wordTag.wordTagId},#{item.wordAndTagComment})
+        </foreach>
+    </insert>
+    <delete id="deleteById">
+        delete from word_and_tag_relation
+        <where>
+            <if test="word != null and word.wordId != 0">
+                word_id = #{word.wordId}
+            </if>
+            <if test="wordTag != null and wordTag.wordTagId != 0">
+                and word_tag_id = #{wordTag.wordTagId}
+            </if>
+            <if test="word == null and wordTag == null">
+                and word_id = -1
+            </if>
+        </where>
+    </delete>
+
+    <update id="updateById">
+        update word_and_tag_relation
+        <set>
+            word_and_tag_comment = #{et.wordAndTagComment}
+        </set>
+        where
+        word_id = #{et.word.wordId} and word_tag_Id = #{et.wordTag.wordTagId}
+    </update>
+</mapper>

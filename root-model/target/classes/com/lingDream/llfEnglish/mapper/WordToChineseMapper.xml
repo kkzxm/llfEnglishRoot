@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lingDream.llfEnglish.mapper.WordToChineseMapper">
+    <!--region 结果集映射-->
+    <resultMap id="wordToChinese" type="com.lingDream.llfEnglish.entity.WordToChinese">
+
+        <result property="word.wordId" column="word_id"/>
+        <result property="word.wordSelf" column="word_self"/>
+        <result property="word.wordComment" column="word_comment"/>
+
+        <result property="chinese.chineseId" column="chinese_id"/>
+        <result property="chinese.chineseInfo" column="chinese_info"/>
+        <result property="chinese.chineseComment" column="chinese_comment"/>
+    </resultMap>
+    <!--endregion-->
+    <select id="selectById" resultMap="wordToChinese">
+        select *
+        from word_to_chinese_info
+        where word_id = #{word.wordId}
+          and chinese_id = #{chinese.chineseId}
+    </select>
+    <select id="selectByOnly" resultMap="wordToChinese">
+        select *
+        from word_to_chinese_info
+        where word_self = #{word.wordSelf}
+          and chinese_info = #{chinese.chineseInfo}
+    </select>
+
+
+    <insert id="insert">
+        insert into word_to_chinese(word_id, chinese_id, word_To_Chinese_Comment) value (#{word.wordId}, #{chinese.chineseId}, #{wordToChineseComment})
+    </insert>
+    <insert id="insertList">
+        insert into word_to_chinese(word_id,chinese_id, word_To_Chinese_Comment)
+        values
+        <foreach collection="list" separator="," item="item">
+            (#{item.word.wordId},#{item.chinese.chineseId},#{item.wordToChineseComment})
+        </foreach>
+    </insert>
+
+
+    <delete id="deleteById">
+        delete from word_to_chinese
+        <where>
+            <if test="word != null and word.wordId != 0">
+                word_id = #{word.wordId}
+            </if>
+            <if test="chinese != null and chinese.chineseId != 0">
+                and chinese_id = #{chinese.chineseId}
+            </if>
+            <if test="word == null and chinese == null">
+                and word_id = -1
+            </if>
+        </where>
+    </delete>
+
+    <update id="updateById">
+        update word_to_chinese
+        <set>
+            <if test="et.word.wordId != null">
+                word_To_Chinese_Comment = #{et.wordToChineseComment},
+            </if>
+        </set>
+        where
+        word_id = #{et.word.wordId} and chinese_id = #{et.chinese.chineseId}
+    </update>
+</mapper>

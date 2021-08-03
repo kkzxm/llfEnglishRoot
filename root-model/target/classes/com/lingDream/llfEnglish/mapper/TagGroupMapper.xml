@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lingDream.llfEnglish.mapper.TagGroupMapper">
+    <!--region 结果集映射-->
+    <resultMap id="tagGroup" type="com.lingDream.llfEnglish.entity.TagGroup">
+        <result property="tagGroupId" column="tag_group_id"/>
+        <result property="tagGroupName" column="tag_group_name"/>
+        <result property="tagGroupComment" column="tag_group_comment"/>
+        <result property="tagGroupParent.tagGroupId" column="tag_group_parent"/>
+    </resultMap>
+    <insert id="insert">
+        insert into tag_group (tag_group_id,
+                               tag_group_name,
+                               tag_group_comment,
+                               tag_group_parent)
+            value (#{tagGroupId},
+                   #{tagGroupName},
+                   #{tagGroupComment},
+                   #{tagGroupParent.tagGroupId})
+    </insert>
+    <update id="updateById">
+        UPDATE tag_group
+        SET tag_group_name=#{et.tagGroupName},
+            tag_group_comment=#{et.tagGroupComment},
+            tag_group_parent=#{et.tagGroupParent.tagGroupId}
+        WHERE tag_group_id = #{et.tagGroupId}
+    </update>
+    <select id="selectByOnly" resultMap="tagGroup">
+        select *
+        from tag_group
+        where tag_group_name = #{tagGroupName}
+    </select>
+    <!--endregion-->
+</mapper>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lingDream.llfEnglish.mapper.WordMapper">
+    <!--region 结果集映射-->
+    <resultMap id="word" type="com.lingDream.llfEnglish.entity.Word">
+        <result property="wordId" column="word_id"/>
+        <result property="wordSelf" column="word_self"/>
+        <result property="wordComment" column="word_comment"/>
+        <collection property="wordTagList" ofType="com.lingDream.llfEnglish.entity.WordTag">
+            <result property="wordTagId" column="word_tag_id"/>
+            <result property="wordTagName" column="word_tag_name"/>
+            <result property="tagComment" column="tag_comment"/>
+            <result property="tagGroup.tagGroupId" column="tag_group_id"/>
+            <result property="tagGroup.tagGroupName" column="tag_group_name"/>
+        </collection>
+        <collection property="chineseList" ofType="com.lingDream.llfEnglish.entity.Chinese">
+            <result property="chineseId" column="chinese_id"/>
+            <result property="chineseInfo" column="chinese_info"/>
+            <result property="chineseComment" column="chinese_comment"/>
+        </collection>
+        <collection property="wordTypeList" ofType="com.lingDream.llfEnglish.entity.WordType">
+            <result property="wordTypeId" column="word_type_id"/>
+            <result property="wordTypeName" column="word_type_name"/>
+            <result property="wordTypeComment" column="word_type_comment"/>
+        </collection>
+    </resultMap>
+    <!--endregion-->
+    <select id="getWordAllInfoByTagId" resultMap="word">
+        select *
+        from word_all_info
+        where word_tag_id = #{wordTagId}
+    </select>
+    <select id="getWordAllInfoByTagIsNull" resultMap="word">
+        select *
+        from word_all_info
+        where word_tag_id is null
+    </select>
+    <select id="limitPage" resultMap="word">
+        select wo.word_id,
+               wo.word_self,
+               wo.word_comment,
+               word_To_Chinese_Comment,
+               chinese_id,
+               chinese_info,
+               chinese_comment,
+               word_type_id,
+               word_and_type_comment,
+               word_type_name,
+               word_type_comment,
+               word_tag_id,
+               word_and_tag_comment,
+               word_tag_name,
+               tag_group_id,
+               tag_comment,
+               tag_group_name,
+               tag_group_comment,
+               tag_group_parent
+        from (select *
+              from word
+              limit #{start},#{size}) wo
+                 left join word_all_info wai on wo.word_id = wai.word_id
+    </select>
+</mapper>

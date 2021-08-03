@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lingDream.llfEnglish.mapper.ChineseMapper">
+    <!--region 结果集映射-->
+    <resultMap id="chinese" type="com.lingDream.llfEnglish.entity.Chinese">
+
+    </resultMap>
+    <!--endregion-->
+    <select id="selectByOnly" resultMap="chinese">
+        select *
+        from chinese
+        where chinese_info = #{chineseInfo}
+    </select>
+    <delete id="deleteById">
+        delete
+        from chinese
+        where chinese_id = #{chineseId}
+    </delete>
+    <insert id="insertList">
+        insert into chinese(chinese_id, chinese_info, chinese_comment)
+        values
+        <foreach collection="list" separator="," item="item">
+            (#{item.chineseId},#{item.chineseInfo},#{item.chineseComment})
+        </foreach>
+    </insert>
+</mapper>
